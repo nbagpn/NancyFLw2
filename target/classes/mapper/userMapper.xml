@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nancy.puser.dao.PuserDao">
+<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称不致，此处一定要！-->
+    <resultMap id="BaseResultMap" type="com.nancy.puer.entity.Puser">
+	    <result column="phone" property="phone" jdbcType="CHAR" />
+	    <result column="name" property="name" jdbcType="CHAR" />
+	    <result column="birth" property="birth" jdbcType="CHAR" />
+	    <result column="gender" property="gender" jdbcType="CHAR" />
+	    <result column="address" property="address" jdbcType="CHAR" />
+	    <result column="balance" property="balance" jdbcType="CHAR" />
+	    <result column="points" property="points" jdbcType="CHAR" />
+    </resultMap>
+    
+    <!-- 查询所有数据-->
+    <select id="getPuserlist" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT t.phone,t.name,t.birth,t.gender,t.address,t.balance,t.points FROM puser t WHERE 1=1 ORDER BY createTime desc LIMIT #{initNum}, 16;
+    </select>
+    
+    <!-- 查询所有数据-->
+    <select id="getPuserlistSize" resultType="java.lang.Integer" >
+        SELECT count(*) as totRecord FROM puser t WHERE 1=1;
+    </select>
+    
+    <!-- 新增用户 -->
+    <insert id="addPuser" parameterType="com.nancy.puer.entity.Puser" >
+    	INSERT INTO puser (phone,name,birth,gender,address,balance,points,createTime) VALUES (#{phone},#{name},#{birth},#{gender},#{address},#{balance},#{balance},now())
+    </insert>
+    
+     <!-- 更新用户 -->
+    <update id="updatePuser" parameterType="com.nancy.puer.entity.Puser">
+    	UPDATE puser SET balance = #{balance}
+    	<if test="points != null and points != ''">
+           ,points=#{points}
+        </if>
+    	 WHERE phone = #{phone};
+    </update>
+    
+    <!-- 查询用户详情 -->
+    <select id="getPuserDetail" resultMap="BaseResultMap" parameterType="java.lang.String">
+    	SELECT t.phone,t.name,t.birth,t.gender,t.address,t.balance,t.points FROM puser t WHERE 1=1 and t.phone=#{userPhone};
+    </select>
+    
+    <select id="goSearch" resultMap="BaseResultMap"  parameterType="hashmap">
+    SELECT t.phone,t.name,t.birth,t.gender,t.address,t.balance,t.points FROM puser t WHERE t.phone LIKE '%${phone}%' 
+    <if test="initNum != null">
+    LIMIT #{initNum}, 16
+    </if>
+    </select>
+    
+    <!-- 新增用户 -->
+    <insert id="addPuserTest" parameterType="hashmap" >
+    	INSERT INTO puser (phone,name) VALUES (#{phone},#{name})
+    </insert>
+</mapper>
